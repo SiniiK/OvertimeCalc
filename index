@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amount Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #2b2b2b;
+            color: #ffffff;
+        }
+
+        h1, h2 {
+            color: #61dafb;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin: 10px;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #3b3b3b;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #61dafb;
+            color: #2b2b2b;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4fa3d1;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            color: #aaaaaa;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #61dafb;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Amount Calculator</h1>
+    <form id="amountForm">
+        <label for="quotaNeeded">Quota Needed:</label>
+        <input type="number" id="quotaNeeded" oninput="this.value = Math.abs(this.value)" onkeydown="handleArrowKeys(event, 'totalNeeded', 'ownedMoney')" required>
+
+        <label for="ownedMoney">Owned Money:</label>
+        <input type="number" id="ownedMoney" oninput="this.value = Math.abs(this.value)" onkeydown="handleArrowKeys(event, 'quotaNeeded', 'totalNeeded')" required>
+
+        <label for="totalNeeded">Total Needed:</label>
+        <input type="number" id="totalNeeded" oninput="this.value = Math.abs(this.value)" onkeydown="handleArrowKeys(event, 'quotaNeeded', 'ownedMoney')" required>
+
+        <button type="button" onclick="calculateAmount()">Calculate</button>
+    </form>
+
+    <h2 id="result"></h2>
+
+    <div class="footer">
+        Made by <a href="https://www.twitch.tv/siniik/">SiniiK</a>
+    </div>
+
+    <script>
+        var currentInputIndex = 0;
+        var inputIds = ['quotaNeeded', 'ownedMoney', 'totalNeeded'];
+
+        document.getElementById('amountForm').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                calculateAmount();
+            }
+        });
+
+        function handleArrowKeys(event, nextFieldId, prevFieldId) {
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                event.preventDefault(); // Prevent the default arrow key behavior
+
+                // Reset previous field
+                var prevField = document.getElementById(inputIds[currentInputIndex]);
+                // No need to set color to black
+
+                // Update the current input index based on arrow direction
+                if (event.key === 'ArrowUp') {
+                    currentInputIndex = (currentInputIndex === 0) ? inputIds.length - 1 : currentInputIndex - 1;
+                } else if (event.key === 'ArrowDown') {
+                    currentInputIndex = (currentInputIndex === inputIds.length - 1) ? 0 : currentInputIndex + 1;
+                }
+
+                // Focus on the new field
+                var currentInput = document.getElementById(inputIds[currentInputIndex]);
+                currentInput.select();
+            }
+        }
+
+        function calculateAmount() {
+            var quotaNeeded = Math.abs(parseInt(document.getElementById('quotaNeeded').value));
+            var totalNeeded = Math.abs(parseInt(document.getElementById('totalNeeded').value));
+            var ownedMoney = Math.abs(parseInt(document.getElementById('ownedMoney').value));
+            var amountNeeded = 0;
+
+            totalNeeded -= ownedMoney;
+
+            for (var i = 0; i < totalNeeded; i++) {
+                amountNeeded = (i - quotaNeeded) / 5.0 - 15.0;
+                if (i + amountNeeded >= totalNeeded) {
+                    break;
+                }
+            }
+
+            var total = totalNeeded - Math.floor(amountNeeded);
+            document.getElementById('result').innerHTML = 'Total: ' + total;
+        }
+    </script>
+</body>
+</html>
