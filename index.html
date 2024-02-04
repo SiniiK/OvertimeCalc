@@ -126,17 +126,15 @@
             var amountNeeded = 0;
 
             totalNeeded -= ownedMoney;
+    
+			if (totalNeeded <= quotaNeeded) {
+				total = Math.ceil(quotaNeeded);
+			} else {
+				total = Math.ceil((5 * (totalNeeded + 15) + quotaNeeded) / 6);
+			}
 
-            for (var i = 0; i < totalNeeded; i++) {
-                amountNeeded = (i - quotaNeeded) / 5.0 - 15.0;
-                if (i + amountNeeded >= totalNeeded) {
-                    break;
-                }
-            }
-
-            var total = totalNeeded - Math.floor(amountNeeded);
-            document.getElementById('result').innerHTML = 'Total: ' + total;
-        }
+			document.getElementById('result').innerHTML = 'Total: ' + total;
+		}
     </script>
 </body>
 </html>
